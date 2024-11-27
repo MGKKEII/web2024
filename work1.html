@@ -12,7 +12,6 @@
 
 <div class="container-fluid p-5 bg-primary text-white text-center">
   <h1>แบบทดสอบวิชาสุขศึกษา</h1>
-  
 </div>
   
 <div class="container mt-5 p-5">
@@ -40,28 +39,27 @@
 
   function displayQuizList(){
     $("#quizListBox").html("<div class='p-1'>ข้อสอบ</div>");
-    for(var i in quizlist){
-      displayQuiz(i,quizlist[i]);
+    // แก้ไขตรงนี้เพื่อดึงข้อมูลคำถามจาก quizlist[0].questions
+    for (var i in quizlist[0].questions) {
+      displayQuiz(i, quizlist[0].questions[i]);
     }
   }
-function displayQuiz(i,q){
-    var no=parseInt(i)+1;
-    var html = "<div class='p-2'>ข้อที่ "+no+".<div>"+q.title+"</div>";
-    for(var c in q.options){
-      var v=parseInt(c)+1;
-      html+="<div class='alert alert-info'>";
-      html+="<input type='radio' name='q"+no+"' value='"+v+"'>"+v+". ";  
-      html+=q.options[c]+"</div>";  
+
+  function displayQuiz(i, q){
+    var no = parseInt(i) + 1;
+    var html = "<div class='p-2'>ข้อที่ " + no + ".<div>" + q.question + "</div>";
+    for (var c in q.options) {
+      var v = parseInt(c) + 1;
+      html += "<div class='alert alert-info'>";
+      html += "<input type='radio' name='q" + no + "' value='" + v + "'>" + v + ". ";  
+      html += q.options[c] + "</div>";  
     }
-    html+="</div>";
+    html += "</div>";
     $("#quizListBox").append(html);
   }
 
-
   var quizlist = [
-    {
-  "questions": [
-    {
+  {
       "question": "การล้างมือควรทำเมื่อไหร่?",
       "options": [
         "หลังจากเล่นข้างนอก",
@@ -241,9 +239,7 @@ function displayQuiz(i,q){
       ],
       "correct_answer": "ทำให้เรารู้สึกเย็นสบาย"
     }
-  ]
-}
-];
+  ];
 
 </script>
 </body>
