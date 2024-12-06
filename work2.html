@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>แบบทดสอบ</title>
+<style>
+  /* เพิ่ม CSS สำหรับการจัดรูปแบบที่นี่ */
+  body {
+      font-family: sans-serif;
+      background-color: #FFF8E1; /* สีพื้นหลังเหลืองอ่อน */
+      color: #5F5F5F; /* สีข้อความสีเทาเข้มสำหรับการอ่านง่าย */
+      margin: 0;
+      padding: 0;
+  }
+
+  h1 {
+      text-align: center;
+      color: #F9A825; /* สีข้อความหัวข้อเป็นเหลืองทอง */
+      padding: 20px;
+      background-color: #FFEB3B; /* สีพื้นหลังหัวข้อเป็นเหลืองสด */
+      margin-bottom: 20px;
+      font-size: 2rem;
+  }
+
+  #quiz {
+      margin: 0 auto;
+      max-width: 600px;
+      padding: 20px;
+      background-color: #FFEE58; /* พื้นหลังของคำถามเป็นสีเหลืองอ่อน */
+      border-radius: 8px;
+  }
+
+  .question {
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+      color: #6A4E00; /* สีข้อความคำถามเป็นสีน้ำตาลอมเหลือง */
+  }
+
+  button {
+      display: block;
+      width: 200px;
+      margin: 20px auto;
+      padding: 10px;
+      background-color: #FFEB3B; /* สีปุ่มเป็นสีเหลือง */
+      border: none;
+      border-radius: 8px;
+      color: #5F5F5F; /* สีข้อความในปุ่ม */
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+      background-color: #F9A825; /* เปลี่ยนสีปุ่มเมื่อชี้เมาส์ */
+  }
+
+  #results {
+      text-align: center;
+      padding: 10px;
+      font-size: 1.2rem;
+      color: #6A4E00; /* สีข้อความผลลัพธ์ */
+  }
+</style>
+</head>
+<body>
+  <h1>แบบทดสอบ</h1>
+  <div id="quiz"></div>
+  <button id="submit">ตรวจคำตอบ</button>
+  <div id="results"></div>
+
+  <script>
+    // ใส่โค้ด Javascript ที่นี่ (จากขั้นตอนที่ 2)
+    const quizContainer = document.getElementById('quiz');
+    const resultsContainer = document.getElementById('results');
+    const submitButton = document.getElementById('submit');
+
+    fetch('quiz2.json') // เปลี่ยนชื่อไฟล์ถ้าจำเป็น
+      .then(response => response.json())
+      .then(questions => {
+        let output = [];
+
+        questions.forEach(
+          (currentQuestion, questionNumber) => {
+            let answers = [];
+
+            for(letter in currentQuestion.options){
+              answers.push(
+                `<label>
+                  <input type="radio" name="question${questionNumber}" value="${letter}">
+                  ${currentQuestion.options[letter]}
+                </label>`
+              );
+            }
+
+            output.push(
+              `<div class="question">${currentQuestion.title}</div>
+               <div class="answers">${answers.join('')}</div>`
+            );
+          }
+        );
+
+        quizContainer.innerHTML = output.join('');
+      });
+
+
+    submitButton.addEventListener('click', function() {
+      const answers = [];
+      const questions = document.querySelectorAll('.question');
+      questions.forEach((question, index) => {
+        const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+        answers.push(selectedOption ? selectedOption.value : null);
+      });
+
+      fetch('quiz2.json') // เปลี่ยนชื่อไฟล์ถ้าจำเป็น
+        .then(response => response.json())
+        .then(questions => {
+          let score = 0;
+          answers.forEach((answer, index) => {
+              if (answer !== null && parseInt(answer) === questions[index].answer) {
+                  score++;
+              }
+          });
+
+          resultsContainer.innerHTML = `คุณได้คะแนน ${score} จาก ${questions.length} คะแนน`;
+        });
+    });
+  </script>
+</body>
+</html>
