@@ -1,0 +1,121 @@
+import React, { useState, useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+const QuizApp = () => {
+  const [page, setPage] = useState(1); // จัดการหน้า
+  const [questions, setQuestions] = useState([]); // ข้อสอบ
+  const [answers, setAnswers] = useState([]); // คำตอบ
+  const [score, setScore] = useState(0); // คะแนน
+
+  // โหลดข้อมูลคำถาม
+  useEffect(() => {
+    const loadQuestions = async () => {
+      try {
+        const res = await fetch("quiz3.json");
+        const data = await res.json();
+        setQuestions(data);
+        setAnswers(new Array(data.length).fill(null));
+      } catch (error) {
+        console.error("Error loading questions:", error);
+      }
+    };
+    loadQuestions();
+  }, []);
+
+  // ตรวจสอบว่าผู้ใช้ตอบครบทุกข้อหรือไม่
+  const validateAnswers = () => answers.every((answer) => answer !== null);
+
+  // คำนวณคะแนน
+  const gradeQuiz = () => {
+    const calculatedScore = answers.reduce(
+      (total, answer, index) =>
+        answer === questions[index]?.answer ? total + 1 : total,
+      0
+    );
+    setScore(calculatedScore);
+    setPage(3); // เปลี่ยนไปหน้าคะแนน
+  };
+
+  return (
+    <div className="container mt-5">
+      {page === 1 && (
+        <div className="text-center">
+          <h1 className="mb-4">แบบทดสอบ</h1>
+          <p className="lead">โปรดกดปุ่มด้านล่างเพื่อเริ่มทำแบบทดสอบ</p>
+          <button className="btn btn-primary btn-lg" onClick={() => setPage(2)}>
+            เริ่มทำแบบทดสอบ
+          </button>
+        </div>
+      )}
+
+      {page === 2 && (
+        <div>
+          <h1 className="mb-4">ข้อสอบ</h1>
+          {questions.map((q, index) => (
+            <div className="card mb-3" key={index}>
+              <div className="card-body">
+                <h5 className="card-title">ข้อที่ {index + 1}</h5>
+                <p dangerouslySetInnerHTML={{ __html: q.title }} />
+                <div>
+                  {Object.entries(q.options).map(([value, text]) => (
+                    <div className="form-check" key={value}>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name={`question-${index}`}
+                        id={`option-${index}-${value}`}
+                        value={value}
+                        checked={answers[index] === value}
+                        onChange={() => {
+                          const newAnswers = [...answers];
+                          newAnswers[index] = value;
+                          setAnswers(newAnswers);
+                        }}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor={`option-${index}-${value}`}
+                      >
+                        {text}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+          <div className="text-center mt-4">
+            {validateAnswers() ? (
+              <button className="btn btn-success" onClick={gradeQuiz}>
+                ตรวจคำตอบ
+              </button>
+            ) : (
+              <p className="text-danger">กรุณาตอบให้ครบทุกข้อ</p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {page === 3 && (
+        <div className="text-center">
+          <h1 className="mb-4">ผลคะแนน</h1>
+          <p className="lead">
+            คุณได้คะแนน <strong>{score}</strong> จาก {questions.length} คะแนน
+          </p>
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              setPage(1);
+              setAnswers(new Array(questions.length).fill(null));
+              setScore(0);
+            }}
+          >
+            กลับไปยังหน้าเริ่มต้น
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default QuizApp;
