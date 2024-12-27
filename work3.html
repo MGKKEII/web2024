@@ -1,121 +1,168 @@
-import React, { useState, useEffect } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+<!DOCTYPE html>
+<html lang="th">
 
-const QuizApp = () => {
-  const [page, setPage] = useState(1); // จัดการหน้า
-  const [questions, setQuestions] = useState([]); // ข้อสอบ
-  const [answers, setAnswers] = useState([]); // คำตอบ
-  const [score, setScore] = useState(0); // คะแนน
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>แบบทดสอบคณิตศาสตร์ </title>
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/vue@3.2.45/dist/vue.global.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@3.1.5/dist/vuetify.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@3.1.5/dist/vuetify.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f4f8fb;
+      font-family: 'Arial', sans-serif;
+    }
 
-  // โหลดข้อมูลคำถาม
-  useEffect(() => {
-    const loadQuestions = async () => {
-      try {
-        const res = await fetch("quiz3.json");
-        const data = await res.json();
-        setQuestions(data);
-        setAnswers(new Array(data.length).fill(null));
-      } catch (error) {
-        console.error("Error loading questions:", error);
-      }
-    };
-    loadQuestions();
-  }, []);
+    .container {
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      margin-top: 20px;
+    }
 
-  // ตรวจสอบว่าผู้ใช้ตอบครบทุกข้อหรือไม่
-  const validateAnswers = () => answers.every((answer) => answer !== null);
+    .bg-primary-custom {
+      background-color: #4ca1af;
+      color: white;
+    }
 
-  // คำนวณคะแนน
-  const gradeQuiz = () => {
-    const calculatedScore = answers.reduce(
-      (total, answer, index) =>
-        answer === questions[index]?.answer ? total + 1 : total,
-      0
-    );
-    setScore(calculatedScore);
-    setPage(3); // เปลี่ยนไปหน้าคะแนน
-  };
+    .btn-primary {
+      background-color: #66b3b7;
+      border-color: #66b3b7;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: 30px;
+    }
 
-  return (
-    <div className="container mt-5">
-      {page === 1 && (
-        <div className="text-center">
-          <h1 className="mb-4">แบบทดสอบ</h1>
-          <p className="lead">โปรดกดปุ่มด้านล่างเพื่อเริ่มทำแบบทดสอบ</p>
-          <button className="btn btn-primary btn-lg" onClick={() => setPage(2)}>
-            เริ่มทำแบบทดสอบ
-          </button>
+    .btn-primary:hover {
+      background-color: #4ca1af;
+      border-color: #4ca1af;
+    }
+
+    .quiz-box {
+      padding-top: 20px;
+    }
+
+    .alert-info {
+      background-color: #e8f7fb;
+      border-color: #b0d9e5;
+      color: #4ca1af;
+    }
+
+    .alert-warning {
+      background-color: #fff3cd;
+      border-color: #ffeeba;
+      color: #856404;
+    }
+
+    .alert-success {
+      background-color: #d4edda;
+      border-color: #c3e6cb;
+      color: #155724;
+    }
+
+    .alert-danger {
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+      color: #721c24;
+    }
+
+    .quiz-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Arial', sans-serif;
+      font-weight: 600;
+    }
+
+    .alert-box {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <v-app>
+      <div class="pa-4 bg-primary-custom">แบบทดสอบคณิตศาสตร์</div>
+
+      <div v-if="page === 1" class="center text-center mt-5">
+        <v-btn @click="page = 2" class="btn-primary">เริ่มทำแบบทดสอบ</v-btn>
+      </div>
+
+      <div v-if="page === 2">
+        <div v-for="(q, i) in qlist" :key="i" class="quiz-box container">
+          <div>ข้อที่ {{ i + 1 }}</div>
+          <div v-html="q.title" class="quiz-title"></div>
+          <v-radio-group v-model="answers[i]" class="mt-3">
+            <v-radio v-for="(otxt, ov) in q.options" :key="ov" :value="ov" class="d-flex align-center">
+              <template #label>
+                {{ otxt }}
+              </template>
+            </v-radio>
+          </v-radio-group>
         </div>
-      )}
 
-      {page === 2 && (
-        <div>
-          <h1 className="mb-4">ข้อสอบ</h1>
-          {questions.map((q, index) => (
-            <div className="card mb-3" key={index}>
-              <div className="card-body">
-                <h5 className="card-title">ข้อที่ {index + 1}</h5>
-                <p dangerouslySetInnerHTML={{ __html: q.title }} />
-                <div>
-                  {Object.entries(q.options).map(([value, text]) => (
-                    <div className="form-check" key={value}>
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name={`question-${index}`}
-                        id={`option-${index}-${value}`}
-                        value={value}
-                        checked={answers[index] === value}
-                        onChange={() => {
-                          const newAnswers = [...answers];
-                          newAnswers[index] = value;
-                          setAnswers(newAnswers);
-                        }}
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor={`option-${index}-${value}`}
-                      >
-                        {text}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-          <div className="text-center mt-4">
-            {validateAnswers() ? (
-              <button className="btn btn-success" onClick={gradeQuiz}>
-                ตรวจคำตอบ
-              </button>
-            ) : (
-              <p className="text-danger">กรุณาตอบให้ครบทุกข้อ</p>
-            )}
-          </div>
+        <div class="position-sticky bottom-0 pa-4 bg-primary-custom">
+          <v-btn v-if="validate()" @click="grading()" class="btn-primary">
+            <v-icon>mdi-check</v-icon> ตรวจคำตอบ
+          </v-btn>
+          <div v-else class="alert-warning alert-box">กรุณาตอบให้ครบ</div>
         </div>
-      )}
+      </div>
 
-      {page === 3 && (
-        <div className="text-center">
-          <h1 className="mb-4">ผลคะแนน</h1>
-          <p className="lead">
-            คุณได้คะแนน <strong>{score}</strong> จาก {questions.length} คะแนน
-          </p>
-          <button
-            className="btn btn-primary"
-            onClick={() => {
-              setPage(1);
-              setAnswers(new Array(questions.length).fill(null));
-              setScore(0);
-            }}
-          >
-            กลับไปยังหน้าเริ่มต้น
-          </button>
-        </div>
-      )}
-    </div>
-  );
-};
+      <div v-if="page === 3" class="container text-center">
+        <div class="alert-success alert-box">คุณได้คะแนน {{ score }} จาก {{ qlist.length }} คะแนน</div>
+        <v-btn @click="page = 1" class="btn-primary">กลับไปยังหน้าเริ่มต้น</v-btn>
+      </div>
+    </v-app>
+  </div>
 
-export default QuizApp;
+  <script>
+    const { createApp } = Vue;
+    const { createVuetify } = Vuetify;
+
+    const vuetify = createVuetify();
+
+    const app = createApp({
+      data() {
+        return {
+          qlist: [],
+          answers: [],
+          score: 0,
+          page: 1,
+        };
+      },
+      mounted() {
+        this.load_data();
+      },
+      methods: {
+        async load_data() {
+          try {
+            const res = await fetch("quiz3.json");
+            this.qlist = await res.json();
+            this.answers = new Array(this.qlist.length).fill(null);
+          } catch (error) {
+            console.error("Error loading data:", error);
+          }
+        },
+        validate() {
+          return this.answers.every(answer => answer !== null);
+        },
+        grading() {
+          this.score = this.answers.filter((answer, index) => answer === this.qlist[index].answer).length;
+          this.page = 3;
+        },
+      },
+    });
+
+    app.use(vuetify).mount("#app");
+  </script>
+</body>
+
+</html>
