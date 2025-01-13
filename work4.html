@@ -9,20 +9,34 @@
 
 <body>
     <a-scene>
-        <a-assets>
-            <a-assets-item id="tree" src="./imgmodel/cartoon_girl/scene.gltf"></a-asset-item>
-                <a-assets-item id="cat" src="./imgmodel/cats/scene.gltf"></a-asset-item>
-        </a-assets>
+
+        <audio id="background-music" src="./imgmodel/music_cute.mp3"></audio>
+        <a-sound src="#background-music" autoplay="true" loop="true" volume="1"></a-sound>
+        <a-asset-item id="dancing-character" src="./imgmodel/me.glb"></a-asset-item>
+        
         <a-sky color="#ffffff" src="w2.jpg"></a-sky>
 
-        <!-- โมเดลตัวแทนตนเอง -->
-        <!-- <a-entity gltf-model="#tree" position="0 3 -4" scale="10 10 10"></a-entity>
-        <a-entity gltf-model="#cat" modify-materials></a-entity> -->
-        <a-entity gltf-model="./imgmodel/cartoon_girl/scene.gltf" position="0 1.5 -2" scale="1 1 1"></a-entity>
-        <a-entity gltf-model="./imgmodel/cats/scene.gltf" position="0 0 -2" scale="1 1 1"></a-entity>
+        <a-entity gltf-model="./imgmodel/chicken guy.glb" position="2 -1.5 -3" scale=" 0.5 0.5 0.5"></a-entity>
+        <a-entity gltf-model="./imgmodel/chicken guy.glb" position="-2 -1.5 -3" scale=" 0.5 0.5 0.5"></a-entity>
+
+        <a-entity gltf-model="./imgmodel/Island.glb" position="-1 -2.9 -2.5" scale=" 0.2 0.1 0.19"></a-entity>
+
+        <a-entity gltf-model="./imgmodel/Ginger root.glb" position="0 3.7 -5" scale="1 1 1"
+            animation="property: position; to: 0 4 -5; dur: 2000; dir: alternate; loop: true"
+            animation__rotate="property: rotation; to: 0 360 0; dur: 3000; easing: linear; loop: true"></a-entity>
+        <a-entity gltf-model="./imgmodel/Ginger root.glb" position="5 3 1" scale="1 1 1"
+            animation="property: position; to: 5 3.5 1; dur: 2500; dir: alternate; loop: true"
+            animation__rotate="property: rotation; to: 360 0 360; dur: 4000; easing: ease-in-out; loop: true"></a-entity>
+        <a-entity gltf-model="./imgmodel/Ginger root.glb" position="-5 -1 0.5" scale="1 1 1"
+            animation="property: position; to: -5 -0.5 0.5; dur: 3000; dir: alternate; loop: true"
+            animation__rotate="property: rotation; to: 0 0 360; dur: 3500; easing: linear; loop: true"></a-entity>
+
         <a-light type="ambient" color="#ffffff" intensity="0.5"></a-light>
         <a-light type="spot" position="0 5 -2" angle="45" intensity="1"></a-light>
         <a-light type="directional" color="#ffffff" intensity="1" position="0 10 0"></a-light>
+
+        <a-entity gltf-model="#dancing-character" position="0 -1.5 -3" scale="2 2 2" animation-mixer></a-entity>
+        </a-entity>
         <a-text value="Suwarin Photak 653380028-0 sec 2" position="0 3 -4" align="center" color="#000000"
             scale="2 2 2"></a-text>
         <a-text value="I like to eat fried chicken with ginger juice." position="0 2.5 -4" align="center"
