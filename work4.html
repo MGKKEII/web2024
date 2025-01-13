@@ -1,0 +1,40 @@
+<html>
+
+<head>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.2/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.2/dist/aframe-extras.min.js"></script>
+
+</head>
+
+<body>
+    <a-scene>
+        <a-entity gltf-model="image/Chicken.glb" position="0 1 -3" scale="1 1 1" rotation="0 0 0"></a-entity>
+
+        <!-- โมเดลตัวแทนตนเอง -->
+        <a-entity gltf-model="image/Chicken.glb" position="0 0 -3" scale="0.5 0.5 0.5"
+            animation-mixer="clip:*"></a-entity>
+
+        <!-- โมเดลไก่หมุน -->
+        <a-entity gltf-model="image/Chicken.glb" position="-2 1 -4" scale="0.5 0.5 0.5"
+            animation="property: rotation; to: 0 360 0; loop: true; dur: 4000">
+        </a-entity>
+
+        <!-- โมเดลไก่กระเด้งขึ้นลง -->
+        <a-entity gltf-model="image/Chicken.glb" position="2 0.5 -3" scale="0.5 0.5 0.5"
+            animation="property: position; dir: alternate; dur: 2000; loop: true; to: 2 1.5 -3">
+        </a-entity>
+
+        <!-- แสง -->
+        <a-light type="ambient" color="#ffffff" intensity="0.5"></a-light>
+        <a-light type="spot" position="0 5 -2" angle="45" intensity="1"></a-light>
+
+        <!-- ข้อความ -->
+        <a-text value="Suwarin Photak 653380028-0 sec 2" position="0 3 -4" align="center" color="#000000"
+            scale="2 2 2"></a-text>
+        <a-text value="I like to eat fried chicken with ginger juice." position="0 2.5 -4" align="center"
+            color="#000000" scale="2 2 2"></a-text>
+    </a-scene>
+</body>
+
+</html>
